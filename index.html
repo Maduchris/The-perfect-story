@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Perfect Story - The Uadias Wedding</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background-color: #1a0e1a;
+            color: #fff;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .logo {
+            font-family: 'Dancing Script', cursive;
+            color: #f0a8ff;
+            font-size: 2.2rem;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            padding: 15px 30px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f0a8ff;
+        }
+        
+        .content {
+            flex: 1;
+            margin-left: 300px;
+            background: linear-gradient(135deg, #000000, #37173d);
+            min-height: 100vh;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+ 
+        .main-title {
+            font-family: 'Dancing Script', cursive;
+            color: #f0a8ff;
+            font-size: 4rem;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInDown 1.5s forwards;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeInUp 1.5s forwards 0.5s;
+        }
+        
+        .keywords {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+            height: 80px; /* Fixed height to prevent layout shift */
+            position: relative;
+        }
+        
+        .keyword, .date {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: #f0a8ff;
+            opacity: 0;
+            position: absolute;
+            animation-fill-mode: forwards;
+        }
+        
+        .keyword:nth-child(1) {
+            animation: fadeInOut 2s forwards 1s;
+        }
+        
+        .keyword:nth-child(2) {
+            animation: fadeInOut 2s forwards 3s;
+        }
+        
+        .keyword:nth-child(3) {
+            animation: fadeInOut 2s forwards 5s;
+        }
+        
+        .date {
+            margin-top: 0;
+            animation: fadeIn 1.5s forwards 7s;
+        }
+        
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            width: 100%;
+            margin-top: 30px;
+            padding: 0 10px;
+            justify-content: center;
+        }
+        
+        /* Specific styling for home page gallery to center the 3 images */
+        #home .photo-gallery {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 800px;
+            margin: 30px auto 0;
+        }
+        
+        #home .photo-item {
+            width: 220px;
+            height: 180px;
+            flex-shrink: 0;
+        }
+        
+        .photo-item {
+            height: 180px;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .photo-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            max-width: 90%;
+            margin: 0 auto;
+        }
+        
+        .modal-image {
+            max-width: 90%;
+            max-height: 85vh;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .close {
+            color: #fff;
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            transition: transform 0.3s ease;
+        }
+        
+        .close:hover {
+            transform: scale(1.1);
+        }
+        
+        .nav-arrows {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0 30px;
+            z-index: 1001;
+        }
+        
+        .nav-arrow {
+            color: #fff;
+            font-size: 50px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
+            transition: transform 0.3s ease;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .nav-arrow:hover {
+            transform: scale(1.2);
+        }
+        
+        .page {
+            display: none;
+            width: 100%;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            80% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Mobile Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px 0;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 20px 10px;
+            }
+            
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 8px;
+            }
+            
+            .photo-item {
+                height: 150px;
+            }
+            
+            #home .photo-gallery {
+                gap: 15px;
+                max-width: 100%;
+            }
+            
+            #home .photo-item {
+                width: 180px;
+                height: 150px;
+            }
+            
+            .modal-image {
+                max-width: 95%;
+            }
+            
+            .nav-arrow {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo" id="logo-link">A Perfect Story</div>
+        <nav class="nav-links">
+            <a href="#" class="nav-link active" data-page="home">HOME</a>
+            <a href="#" class="nav-link" data-page="bride">BRIDE</a>
+            <a href="#" class="nav-link" data-page="groom">GROOM</a>
+            <a href="#" class="nav-link" data-page="details">DETAILS</a>
+            <a href="#" class="nav-link" data-page="bride-groom">BRIDE & GROOM</a>
+            <a href="#" class="nav-link" data-page="church">CHURCH</a>
+            <a href="#" class="nav-link" data-page="events">EVENTS</a>
+            <a href="#" class="nav-link" data-page="pre-wedding">PRE WEDDING</a>
+            <a href="#" class="nav-link" data-page="photographs">ORDER OF PHOTOGRAPHS</a>
+        </nav>
+    </div>
+    
+    <div class="content">
+        <div class="page active" id="home">
+            <h1 class="main-title">A Perfect Story</h1>
+            <h2 class="subtitle">The union of the Uadias</h2>
+            <div class="keywords">
+                <div class="keyword">Love</div>
+                <div class="keyword">Family</div>
+                <div class="keyword">Joy</div>
+                <div class="date">27th April, 2024</div>
+            </div>
+            
+            <div class="photo-gallery">
+                <div class="photo-item" data-src="images/Home Page/1.jpg">
+                    <img src="images/Home Page/1.jpg" alt="Home Page Image 1">
+                </div>
+                <div class="photo-item" data-src="images/Home Page/2.jpg">
+                    <img src="images/Home Page/2.jpg" alt="Home Page Image 2">
+                </div>
+                <div class="photo-item" data-src="images/Home Page/3.jpg">
+                    <img src="images/Home Page/3.jpg" alt="Home Page Image 3">
+                </div>
+            </div>
+        </div>
+        
+        <div class="page" id="bride">
+            <h1 class="main-title">The Bride</h1>
+            <div class="photo-gallery">
+                <!-- Generate 380 image items -->
+                <script>
+                    for(let i = 1; i <= 380; i++) {
+                        document.write(`
+                            <div class="photo-item" data-src="images/Bride Page/${i}.jpg">
+                                <img src="images/Bride Page/${i}.jpg" alt="Bride Page Image ${i}" loading="lazy">
+                            </div>
+                        `);
+                    }
+                </script>
+            </div>
+        </div>
+
+        <div class="page" id="groom">
+            <h1 class="main-title">The Groom</h1>
+            <div class="photo-gallery">
+                <!-- Generate 380 image items -->
+                <script>
+                    for(let i = 1; i <= 380; i++) {
+                        document.write(`
+                            <div class="photo-item" data-src="images/Groom Page/${i}.jpg">
+                                <img src="images/Groom Page/${i}.jpg" alt="Groom Page Image ${i}" loading="lazy">
+                            </div>
+                        `);
+                    }
+                </script>
+            </div>
+        </div>
+        
+        <div class="page" id="details">
+            <h1 class="main-title">Wedding Details</h1>
+            <div class="photo-gallery">
+                <!-- Generate 380 image items -->
+                <script>
+                    for(let i = 1; i <= 380; i++) {
+                        document.write(`
+                            <div class="photo-item" data-src="images/Details Page/${i}.jpg">
+                                <img src="images/Details Page/${i}.jpg" alt="Details Page Image ${i}" loading="lazy">
+                            </div>
+                        `);
+                    }
+                </script>
+            </div>
+        </div>
+        
+        <div class="page" id="bride-groom">
+            <h1 class="main-title">Bride & Groom</h1>
+            <div class="photo-gallery">
+                <!-- Generate 380 image items -->
+                <script>
+                    for(let i = 1; i <= 380; i++) {
+                        document.write(`
+                            <div class="photo-item" data-src="images/Bride & Groom Page/${i}.jpg">
+                                <img src="images/Bride & Groom Page/${i}.jpg" alt="Bride & Groom Page Image ${i}" loading="lazy">
+                            </div>
+                        `);
+                    }
+                </script>
+            </div>
+        </div>
+        
+        <div class="page" id="church">
+            <h1 class="main-title">Church Ceremony</h1>
+            <div class="photo-gallery">
+                <!-- Generate 380 image items -->
+                <script>
+                    for(let i = 1; i <= 380; i++) {
+                        document.write(`
+                            <div class="photo-item" data-src="images/Church Page/${i}.jpg">
+                                <img src="images/Church Page/${i}.jpg" alt="Church Page Image ${i}" loading="lazy">
+                            </div>
+                        `);
+                    }
+                </script>
+            </div>
+        </div>
+        
+        <div class="page" id="events">
+            <h1 class="main-title">Wedding Events</h1>
+            <div class="photo-gallery">
+                <!-- Generate 380 image items -->
+                <script>
+                    for(let i = 1; i <= 380; i++) {
+                        document.write(`
+                            <div class="photo-item" data-src="images/Events Page/${i}.jpg">
+                                <img src="images/Events Page/${i}.jpg" alt="Events Page Image ${i}" loading="lazy">
+                            </div>
+                        `);
+                    }
+                </script>
+            </div>
+        </div>
+        
+        <div class="page" id="pre-wedding">
+            <h1 class="main-title">Pre Wedding Shoot</h1>
+            <div class="photo-gallery">
+                <!-- Generate 380 image items -->
+                <script>
+                    for(let i = 1; i <= 380; i++) {
+                        document.write(`
+                            <div class="photo-item" data-src="images/Pre Wedding Page/${i}.jpg">
+                                <img src="images/Pre Wedding Page/${i}.jpg" alt="Pre Wedding Page Image ${i}" loading="lazy">
+                            </div>
+                        `);
+                    }
+                </script>
+            </div>
+        </div>
+        
+        <div class="page" id="photographs">
+            <h1 class="main-title">Order of Photographs</h1>
+            <div class="photo-gallery">
+                <!-- Generate 380 image items -->
+                <script>
+                    for(let i = 1; i <= 380; i++) {
+                        document.write(`
+                            <div class="photo-item" data-src="images/Order of Photographs Page/${i}.jpg">
+                                <img src="images/Order of Photographs Page/${i}.jpg" alt="Order of Photographs Page Image ${i}" loading="lazy">
+                            </div>
+                        `);
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Photo Modal -->
+    <div class="modal" id="photo-modal">
+        <span class="close">&times;</span>
+        <div class="modal-content">
+            <img class="modal-image" id="modal-img" src="" alt="Full size photo">
+        </div>
+        <div class="nav-arrows">
+            <button class="nav-arrow" id="prev-photo">&#10094;</button>
+            <button class="nav-arrow" id="next-photo">&#10095;</button>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pages = document.querySelectorAll('.page');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links and pages
+                navLinks.forEach(l => l.classList.remove('active'));
+                pages.forEach(p => p.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Show corresponding page
+                const pageId = this.getAttribute('data-page');
+                document.getElementById(pageId).classList.add('active');
+            });
+        });
+        
+        // Photo gallery modal
+        const modal = document.getElementById('photo-modal');
+        const modalImg = document.getElementById('modal-img');
+        const closeBtn = document.querySelector('.close');
+        const photoItems = document.querySelectorAll('.photo-item');
+        const prevBtn = document.getElementById('prev-photo');
+        const nextBtn = document.getElementById('next-photo');
+        
+        let currentImageIndex = 0;
+        let currentGalleryItems = [];
+        
+        // Open modal when clicking on a photo
+        photoItems.forEach((item, index) => {
+            item.addEventListener('click', function() {
+                const imgSrc = this.getAttribute('data-src');
+                openModal(imgSrc);
+                
+                // Get all images in the current gallery
+                const currentPage = document.querySelector('.page.active');
+                currentGalleryItems = Array.from(currentPage.querySelectorAll('.photo-item'));
+                currentImageIndex = currentGalleryItems.indexOf(this);
+            });
+        });
+        
+        // Close modal
+        closeBtn.addEventListener('click', closeModal);
+        
+        // Close modal when clicking outside the image
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Next and previous buttons
+        prevBtn.addEventListener('click', showPrevImage);
+        nextBtn.addEventListener('click', showNextImage);
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (!modal.style.display || modal.style.display === 'none') return;
+            
+            if (e.key === 'Escape') {
+                closeModal();
+            } else if (e.key === 'ArrowLeft') {
+                showPrevImage();
+            } else if (e.key === 'ArrowRight') {
+                showNextImage();
+            }
+        });
+        
+        function openModal(imgSrc) {
+            modal.style.display = 'block';
+            modalImg.src = imgSrc;
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+        
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+        
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + currentGalleryItems.length) % currentGalleryItems.length;
+            const imgSrc = currentGalleryItems[currentImageIndex].getAttribute('data-src');
+            modalImg.src = imgSrc;
+            
+            // Add smooth scrolling effect
+            modalImg.style.opacity = '0';
+            setTimeout(() => {
+                modalImg.style.opacity = '1';
+            }, 100);
+        }
+        
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % currentGalleryItems.length;
+            const imgSrc = currentGalleryItems[currentImageIndex].getAttribute('data-src');
+            modalImg.src = imgSrc;
+            
+            // Add smooth scrolling effect
+            modalImg.style.opacity = '0';
+            setTimeout(() => {
+                modalImg.style.opacity = '1';
+            }, 100);
+        }
+    </script>
+</body>
+</html> 
