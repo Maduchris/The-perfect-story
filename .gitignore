@@ -1,0 +1,24 @@
+# Ignore large image files (they'll be hosted on Cloudinary)
+Images/**/*.jpg
+Images/**/*.jpeg
+Images/**/*.png
+Images/**/*.gif
+Images/**/*.bmp
+Images/**/*.tiff
+Images/**/*.webp
+
+# Keep the folder structure but ignore the actual images
+!Images/**/README.md
+
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.local
+
+# Logs
+*.log
+
+# Cloudinary config (contains sensitive data)
+cloudinary-config.js 
