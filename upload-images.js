@@ -2,12 +2,9 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const path = require('path');
 
-// Configure Cloudinary (you'll need to add your credentials)
-cloudinary.config({
-  cloud_name: 'YOUR_CLOUD_NAME',
-  api_key: 'YOUR_API_KEY',
-  api_secret: 'YOUR_API_SECRET'
-});
+// Configure Cloudinary (now using local config file)
+const config = require('./cloudinary-config');
+cloudinary.config(config);
 
 // Function to upload a single image
 async function uploadImage(imagePath, folderName) {
